@@ -52,7 +52,42 @@ void BitcoinExchange::fill(std::string &s)
     }
 }
 
-void BitcoinExchange::process()
+void BitcoinExchange::process(const char *av)
 {
-    
+	std::string buffer;
+	std::string date;
+	std::string value;
+    std::fstream in_file(av);
+	std::stringstream res;
+    if (!in_file.is_open())
+    {
+        throw (std::runtime_error("Error: Could not open file.\n"));
+    }
+	getline(in_file, buffer);
+	if (buffer != "date | value")
+	{
+		throw (std::runtime_error("First line of file is incorrect, it should be <date | value>.\n"));
+	}
+	while (getline(in_file, buffer))
+    {
+		res.str(buffer);
+		getline(res, date, '|');
+		getline(res, value);
+    }
+}
+
+int BitcoinExchange::parse(std::string &date, std::string &value)
+{
+	if (date.size() < 10)
+	{
+		std::cerr << "Error: bad input => " << 
+	}
+	for (size_t i = 0; i < date.size(); i++)
+	{
+		if ((i == 4 or i == 7) && date)
+		{
+			std::cerr << 
+		}
+	}
+
 }

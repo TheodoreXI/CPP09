@@ -12,10 +12,6 @@ int main(int argc, char *argv[])
     {
         throw (std::runtime_error("Could not open file.\n"));
     }
-    getline(in_file, buffer);
-    while (getline(in_file, buffer))
-    {
-
-    }
+	
 
 }
