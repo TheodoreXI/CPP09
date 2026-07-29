@@ -6,6 +6,7 @@
 #include <exception>
 #include <iostream>
 #include <sstream>
+#include <cctype>
 
 
 class BitcoinExchange
@@ -19,7 +20,7 @@ class BitcoinExchange
         BitcoinExchange &operator=(const BitcoinExchange &obj);
         void fill(std::string &s);
         void process(const char *av);
-		int parse();
+		int parse(std::string &date, std::string &value);
 };
 
 
