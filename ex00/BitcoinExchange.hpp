@@ -12,7 +12,8 @@
 class BitcoinExchange
 {
     private:
-        std::map<std::string, float> data;
+        std::map<std::string, double> data;
+        double                        v;
     public:
         BitcoinExchange(void);
         BitcoinExchange(const BitcoinExchange &obj);
@@ -21,6 +22,7 @@ class BitcoinExchange
         void fill(std::string &s);
         void process(const char *av);
 		int parse(std::string &date, std::string &value);
+        double find_key(std::string &date, std::string &value);
 };
 
 

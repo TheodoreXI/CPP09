@@ -28,7 +28,7 @@ void BitcoinExchange::fill(std::string &s)
     std::string out;
     std::string temp;
     int c = 0;
-    float f;
+    double f;
 
     if (!in_file.is_open())
     {
@@ -86,6 +86,25 @@ void    remove_whitespace(std::string &date, std::string &value)
     }
 }
 
+double BitcoinExchange::find_key(std::string &date, std::string &value)
+{
+    std::map<std::string, double>::iterator it = data.lower_bound(date);
+    if (it == data.end())
+    {
+        std::cerr << "not date equal or less than the current date found.\n";
+        return (0);
+    }
+    if (date != it->first)
+    {
+        if (it == data.begin())
+        {
+            return (it->second);
+        }
+        it--;
+    }
+    return (it->second);
+}
+
 void BitcoinExchange::process(const char *av)
 {
 	std::string buffer;
@@ -93,6 +112,7 @@ void BitcoinExchange::process(const char *av)
 	std::string value;
     std::fstream in_file(av);
 	std::stringstream res;
+    double d;
     if (!in_file.is_open())
     {
         throw (std::runtime_error("Error: Could not open file.\n"));
@@ -110,14 +130,14 @@ void BitcoinExchange::process(const char *av)
         remove_whitespace(date, value);
         if (!parse(date, value))
             continue;
-        
+        d = find_key(date, value);
+        std::cout << date << " => " << value << " = " << (v*d) << "\n";
     }
 }
 
 int BitcoinExchange::parse(std::string &date, std::string &value)
 {
     std::stringstream res(date);
-    float f;
     int c = 0;
     int count = 0;
     int v = 0;
@@ -158,21 +178,32 @@ int BitcoinExchange::parse(std::string &date, std::string &value)
         std::cerr << "Error: empty value => " << value <<"\n";
         return (0);
     }
+    if (value.size() <= 1)
+    {
+        std::cerr << "Error: value => " << value <<"\n";
+        return (0);
+    }
     for (size_t i = 0; i < value.size(); i++)
 	{
-        if ((!i && value[i] == '-'))
-            continue;
-        if (!count && value[i] == '.')
+        if (i && !count && value[i] == '.')
         {
             count++;
             continue;
         }
-        
+        if (count >= 2 || (value[i] == '.' && !i))
+        {
+            std::cerr << "Error: value => " << value <<"\n";
+            return (0);
+        }
+        if (!std::isdigit(value[i]))
+        {
+            std::cerr << "Error: value => " << value <<"\n";
+            return (0);
+        }
 
-        
     }
-    res >> f;
-    if (f > 1000)
+    res >> v;
+    if (v > 1000)
     {
         std::cerr << "Error: too large a number.\n";
         return (0);
