@@ -56,3 +56,35 @@ PmergeMe(char **av, size_t size)
     }
 }
 
+void PmergeMe::sorted(std::vector<int> &vect_cont)
+{
+    if (vect_cont.size() == 1)
+        return (vect_cont);
+    std::vector<std::pair<int, int>> ps;
+    int left = 0;
+    if (vect_cont.size() % 2)
+        left = 1;
+    int f = 0;
+    int s = 0;
+    int t = 0;
+    for (size_t i = 0; (i+1) < vect_cont.size(); i += 2)
+    {
+        f = vect_cont[i];
+        s = vect_cont[i+1];
+        if (f < s)
+        {
+            t = f;
+            f = s;
+            s = t;
+        }
+        ps.push_back(std::make_pair(f,s));
+    }
+    if (left)
+        left = vect_cont[vect_cont.size()-1];
+    std::vector<int> w;
+    for (size_t i = 0; i < ps.size(); i++)
+    {
+        w.push_back(ps[i].first);
+    }
+    sorted(w);
+}
