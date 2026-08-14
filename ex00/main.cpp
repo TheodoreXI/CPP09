@@ -5,6 +5,7 @@ int main(int argc, char *argv[])
     if (argc != 2)
     {
         std::cout << "You need to input " << argv[0] << " then the name of the file.\n";
+        return (1);
     }
     std::string buffer;
     std::fstream in_file(argv[1]);
@@ -12,6 +13,16 @@ int main(int argc, char *argv[])
     {
         throw (std::runtime_error("Could not open file.\n"));
     }
-	
-
+    buffer = "data.csv";
+	try
+    {
+        BitcoinExchange b;
+        b.fill(buffer);
+        b.process(argv[1]);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what();
+        return (1);
+    }
 }

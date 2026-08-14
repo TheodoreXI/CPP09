@@ -18,6 +18,7 @@ BitcoinExchange::~BitcoinExchange(void)
 BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &obj)
 {
     this->data = obj.data;
+    return (*this);
 }
 
 void BitcoinExchange::fill(std::string &s)
@@ -38,12 +39,11 @@ void BitcoinExchange::fill(std::string &s)
     while (getline(in_file, buffer))
     {
         res.str(buffer);
+        c = 0;
         while (getline(res, temp, ','))
         {
             if (!c)
-            {
                 out = temp;
-            }
             c++;
         }
         res.str(temp);
@@ -52,41 +52,22 @@ void BitcoinExchange::fill(std::string &s)
     }
 }
 
-void    remove_whitespace(std::string &date, std::string &value)
+void    remove_whitespace(std::string &s)
 {
-    int s = (date.length() > value.length()) ? date.length() : value.length();
-    int c_date = 0;
-    int c_value = 0; 
-    for (int i = 0; i < s; i++)
-    {
-        if (!c_date && i < date.length() && std::isspace(date[i]))
-        {
-            date.erase(i, 1);
-        }
-        else
-            c_date = 1;
-        if (!c_value && i < value.length() && std::isspace(value[i]))
-        {
-            value.erase(i, 1);
-        }
-        else
-            c_value = 1;
-    }
-    s = (date.length() > value.length()) ? date.length() : value.length(); 
-    for (int i = s; i >= 0; i--)
-    {
-        if (!c_date && i < date.length() && std::isspace(date[i]))
-        {
-            date.erase(i, 1);
-        }
-        if (!c_value && i < value.length() && std::isspace(value[i]))
-        {
-            value.erase(i, 1);
-        }
-    }
+    if (s.empty())
+        return ;
+    size_t l = s.size();
+    size_t st = 0;
+    size_t en = l-1;
+    while (st < en && std::isspace(s[st]))
+        st++;
+    while (en > st && std::isspace(s[en]))
+        en--;
+    s.erase(en);
+    s.erase(0, st);
 }
 
-double BitcoinExchange::find_key(std::string &date, std::string &value)
+double BitcoinExchange::find_key(std::string &date)
 {
     std::map<std::string, double>::iterator it = data.lower_bound(date);
     if (it == data.end())
@@ -127,10 +108,11 @@ void BitcoinExchange::process(const char *av)
 		res.str(buffer);
 		getline(res, date, '|');
 		getline(res, value);
-        remove_whitespace(date, value);
-        if (!parse(date, value))
+        remove_whitespace(date);
+        remove_whitespace(value);
+        if (parse(date, value))
             continue;
-        d = find_key(date, value);
+        d = find_key(date);
         std::cout << date << " => " << value << " = " << (v*d) << "\n";
     }
 }
@@ -138,20 +120,18 @@ void BitcoinExchange::process(const char *av)
 int BitcoinExchange::parse(std::string &date, std::string &value)
 {
     std::stringstream res(date);
-    int c = 0;
     int count = 0;
     int v = 0;
-    int k = 0;
     int white_count = 0;
 	if (date.size() != 10)
 	{
 		std::cerr << "Error: bad input => " << date << "\n";
-        return (0);
+        return (1);
 	}
     if (value.find('-') != std::string::npos)
     {
         std::cerr << "Error: not a positive number." << "\n";
-        return (0);
+        return (1);
     }
 	for (size_t i = 0; i < date.size(); i++)
 	{
@@ -160,28 +140,28 @@ int BitcoinExchange::parse(std::string &date, std::string &value)
         if (white_count > 2)
         {
             std::cerr << "Error: bad input => " << date <<"\n";
-            return (0);
+            return (1);
         }
         if ((i <= 3 || (i > 4 && i < 7) || i > 7) && !std::isdigit(date[i]))
         {
 			std::cerr << "Error: bad input => " << date <<"\n";
-            return (0);
+            return (1);
         }
 		if ((i == 4 or i == 7) && date[i] != '-')
 		{
 			std::cerr << "Error: bad input => " << date <<"\n";
-            return (0);
+            return (1);
 		}
 	}
     if (value.empty())
     {
         std::cerr << "Error: empty value => " << value <<"\n";
-        return (0);
+        return (1);
     }
     if (value.size() <= 1)
     {
         std::cerr << "Error: value => " << value <<"\n";
-        return (0);
+        return (1);
     }
     for (size_t i = 0; i < value.size(); i++)
 	{
@@ -193,12 +173,12 @@ int BitcoinExchange::parse(std::string &date, std::string &value)
         if (count >= 2 || (value[i] == '.' && !i))
         {
             std::cerr << "Error: value => " << value <<"\n";
-            return (0);
+            return (1);
         }
         if (!std::isdigit(value[i]))
         {
             std::cerr << "Error: value => " << value <<"\n";
-            return (0);
+            return (1);
         }
 
     }
@@ -206,7 +186,7 @@ int BitcoinExchange::parse(std::string &date, std::string &value)
     if (v > 1000)
     {
         std::cerr << "Error: too large a number.\n";
-        return (0);
+        return (1);
     }
-
+    return (0);
 }
