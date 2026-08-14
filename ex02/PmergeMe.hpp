@@ -19,7 +19,8 @@ class PmergeMe
         PmergeMe(const PmergeMe &obj);
         PmergeMe &operator=(const PmergeMe &obj);
         PmergeMe(char **av, size_t size);
-        sorted();
+        std::vector<int> sorted(std::vector<int> &vect_cont);
+        void final_sort();
 };
 
 #endif

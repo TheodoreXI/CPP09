@@ -56,7 +56,7 @@ PmergeMe(char **av, size_t size)
     }
 }
 
-void PmergeMe::sorted(std::vector<int> &vect_cont)
+std::vector<int> PmergeMe::sorted(std::vector<int> &vect_cont)
 {
     if (vect_cont.size() == 1)
         return (vect_cont);
@@ -86,5 +86,12 @@ void PmergeMe::sorted(std::vector<int> &vect_cont)
     {
         w.push_back(ps[i].first);
     }
-    sorted(w);
+    w = sorted(w);
+    std::vector<int> m;
+    std::vector<int> p;
+}
+
+void PmergeMe::final_sort(std::vector<int> &vect_cont)
+{
+    vect_cont = sorted(vect_cont);
 }
