@@ -11,10 +11,12 @@ int main(int ac, char **av)
     try
     {
         RPN r(s);
-        std::cout << "HERE " << r.get_res() << "\n";
+        std::cout << r.get_res() << "\n";
     }
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
+        return (1);
     }
+    return (0);
 }

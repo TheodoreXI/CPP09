@@ -18,7 +18,11 @@ int ft_parse(char c, int num1, int num2)
     else if (c == '*')
         return (num1*num2);
     else if (c == '/')
+    {
+        if (!num1 || !num2)
+            throw (std::runtime_error("Error"));
         return (num1/num2);
+    }
     else
         throw (std::runtime_error("Error"));
 }
@@ -50,17 +54,16 @@ RPN::RPN(std::string &s)
                 res = ft_parse(word[0], num1, num2);
                 st.push(res);
             }
+            else
+                throw (std::runtime_error("Error"));
         }
         else
-        {
             throw (std::runtime_error("Error"));
-        }
     }
-    if (st.size() > 1)
+    if (st.size() != 1)
         throw (std::runtime_error("Error"));
     res = st.top();
     st.pop();
-
 }
 
 RPN::RPN(const RPN &obj)

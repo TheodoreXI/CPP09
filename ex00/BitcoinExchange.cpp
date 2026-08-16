@@ -2,7 +2,6 @@
 
 BitcoinExchange::BitcoinExchange(void)
 {
-    std::cout << "Default constructor called.\n";
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange &obj)
@@ -12,7 +11,6 @@ BitcoinExchange::BitcoinExchange(const BitcoinExchange &obj)
 
 BitcoinExchange::~BitcoinExchange(void)
 {
-    std::cout << "Destructor called.\n";
 }
 
 BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &obj)
@@ -38,6 +36,7 @@ void BitcoinExchange::fill(std::string &s)
     getline(in_file, buffer);
     while (getline(in_file, buffer))
     {
+        res.clear();
         res.str(buffer);
         c = 0;
         while (getline(res, temp, ','))
@@ -46,6 +45,7 @@ void BitcoinExchange::fill(std::string &s)
                 out = temp;
             c++;
         }
+        res.clear();
         res.str(temp);
         res >> f;
         data[out] = f;
@@ -63,7 +63,7 @@ void    remove_whitespace(std::string &s)
         st++;
     while (en > st && std::isspace(s[en]))
         en--;
-    s.erase(en);
+    s.erase(en+1);
     s.erase(0, st);
 }
 
@@ -105,6 +105,7 @@ void BitcoinExchange::process(const char *av)
 	}
 	while (getline(in_file, buffer))
     {
+        res.clear();
 		res.str(buffer);
 		getline(res, date, '|');
 		getline(res, value);
@@ -119,7 +120,7 @@ void BitcoinExchange::process(const char *av)
 
 int BitcoinExchange::parse(std::string &date, std::string &value)
 {
-    std::stringstream res(date);
+    std::stringstream res(value);
     int count = 0;
     int v = 0;
     int white_count = 0;
@@ -158,11 +159,6 @@ int BitcoinExchange::parse(std::string &date, std::string &value)
         std::cerr << "Error: empty value => " << value <<"\n";
         return (1);
     }
-    if (value.size() <= 1)
-    {
-        std::cerr << "Error: value => " << value <<"\n";
-        return (1);
-    }
     for (size_t i = 0; i < value.size(); i++)
 	{
         if (i && !count && value[i] == '.')
@@ -190,3 +186,4 @@ int BitcoinExchange::parse(std::string &date, std::string &value)
     }
     return (0);
 }
+
