@@ -67,18 +67,20 @@ void    remove_whitespace(std::string &s)
     s.erase(0, st);
 }
 
-double BitcoinExchange::find_key(std::string &date)
+double BitcoinExchange::find_key(std::string &date, int *check)
 {
     std::map<std::string, double>::iterator it = data.lower_bound(date);
     if (it == data.begin() && it->first != date)
     {
         std::cerr << "not date equal or less than the current date found.\n";
+        *check = 1;
         return (0);
     }
     if (it->first != date)
     {
         it--;
     }
+    *check = 0;
     return (it->second);
 }
 
@@ -90,6 +92,7 @@ void BitcoinExchange::process(const char *av)
     std::fstream in_file(av);
 	std::stringstream res;
     double d;
+    int check = 0;
     if (!in_file.is_open())
     {
         throw (std::runtime_error("Error: Could not open file.\n"));
@@ -109,7 +112,9 @@ void BitcoinExchange::process(const char *av)
         remove_whitespace(value);
         if (parse(date, value))
             continue;
-        d = find_key(date);
+        d = find_key(date, &check);
+        if (check)
+            continue;
         std::cout << date << " => " << value << " = " << (v*d) << "\n";
     }
 }
@@ -125,7 +130,9 @@ int BitcoinExchange::parse_helper(std::string &date)
     {
         if (i)
         {
-            word >> l;
+            s.clear();
+            s.str(word);
+            s >> l;
             if (i == 1)
             {
                 if (l < 1 || l > 12)
