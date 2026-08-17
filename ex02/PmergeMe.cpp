@@ -172,8 +172,21 @@ std::vector<int> PmergeMe::sorted(std::vector<int> &vect_cont)
             }
         }
     }
-    std::vector<size_t> insert_ord
-
+    std::vector<size_t> loser_order = insert_order(w.size());
+    size_t w_i = 0;
+    size_t p_i = 0;
+    int v = 0;
+    int w_v = 0;
+    for (size_t i = 0; i < loser_order.size(); i++)
+    {
+        w_i = loser_order[i];
+        p_i = w_i - 2;
+        v = p[p_i];
+        w_v = w[v-1];
+    }
+    if (left)
+        binaryInsert(m, m.end(), left);
+    return (m);
 }
 
 void PmergeMe::final_sort(std::vector<int> &vect_cont)
