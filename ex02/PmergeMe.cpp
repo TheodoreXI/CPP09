@@ -1,3 +1,5 @@
+#include "PmergeMe.hpp"
+
 PmergeMe::PmergeMe(void)
 {
 }
@@ -11,24 +13,16 @@ PmergeMe::PmergeMe(const PmergeMe &obj)
     *this = obj;
 }
 
-PmergeMe &operator=(const PmergeMe &obj)
+PmergeMe &PmergeMe::operator=(const PmergeMe &obj)
 {
     if (this != &obj)
     {
-        this->raw_cont = obj.raw_cont;
+        this->vect_cont = obj.vect_cont;
+        this->list_cont = obj.list_cont;
     }
     return (*this);
 }
 
-int parsing(std::string &word)
-{
-    for (size_t i = 0; i < word.size(); i++)
-    {
-        if (!std::isdigit(word[i]))
-            return (1);
-    }
-    return (0);
-}
 
 PmergeMe(char **av, size_t size)
 {
@@ -54,6 +48,35 @@ PmergeMe(char **av, size_t size)
             list_cont.push_back(num);
         }
     }
+}
+int parsing(std::string &word)
+{
+    for (size_t i = 0; i < word.size(); i++)
+    {
+        if (!std::isdigit(word[i]))
+            return (1);
+    }
+    return (0);
+}
+
+std::vector<size_t> ft_jacob_seque(size_t s)
+{
+    std::vector<size_t> ja;
+    ja.push_back(1);
+    ja.push_back(1);
+    int i = 1;
+    while (ja[i] < m)
+    {
+        i++;
+        ja.push_back(ja[i-1]+2*ja[i-2]);
+    }
+    return (ja);
+}
+
+void binaryInsert(std::vector<int> m, std::vector<int>::iterator limit, int v)
+{
+    std::vector<int>::iterator position = std::lower_bound(m.begin(), limit, v);
+    m.insert(position, v);
 }
 
 std::vector<size_t> PmergeMe::generate_jacob(size_t m)
@@ -97,7 +120,7 @@ void binaryInsert(std::vector<int> &m, std::vector<int>::iterator b, int v)
 std::vector<int> PmergeMe::sorted(std::vector<int> &vect_cont)
 {
     if (vect_cont.size() == 1)
-        return (vect_cont);
+    return (vect_cont);
     std::vector<std::pair<int, int>> ps;
     int left = 0;
     if (vect_cont.size() % 2)
@@ -128,37 +151,29 @@ std::vector<int> PmergeMe::sorted(std::vector<int> &vect_cont)
     std::vector<int> m;
     std::vector<int> p;
     m.push_back(w[0]);
-    // push the winner in main
+    //pushing back the first winner
     for (size_t i = 0; i < ps.size(); i++)
     {
-        if (ps[i].first == w[0])
+        if (ps[i].first = w[0])
         {
-            m.insert(m.begin(), p[i].second);
+            m.insert(m.begin(), ps[i].second);
             break;
         }
     }
-    //push the loser of the winner in main
-    for (size_t i = 1; i < w.size(); i++)
-        m.push_back(w[i]);
-    //push every other winner
+    //inserting the first loser
     for (size_t i = 1; i < w.size(); i++)
     {
-        for (size_t j = 0; j < ps.size(); j++)
+        for (size_t i = 0; i < ps.size(); j++)
         {
-            if (ps[j].first == w[k])
+            if (ps[j].first == w[i])
             {
                 p.push_back(ps[j].second);
                 break;
             }
         }
     }
-    //insert pend with losers
-    std::vector<size_t> loser_order =  insert_order(w.size());
-    //the loser inserted order in the pend
-    for (size_t i = 0; i < loser-order.size(); i++)
-    {
-        
-    }
+    std::vector<size_t> insert_ord
+
 }
 
 void PmergeMe::final_sort(std::vector<int> &vect_cont)
