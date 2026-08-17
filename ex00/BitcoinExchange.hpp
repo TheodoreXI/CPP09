@@ -23,6 +23,7 @@ class BitcoinExchange
         void process(const char *av);
 		int parse(std::string &date, std::string &value);
         double find_key(std::string &date);
+        int parse_helper(std::string &date);
 };
 
 

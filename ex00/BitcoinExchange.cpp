@@ -70,17 +70,13 @@ void    remove_whitespace(std::string &s)
 double BitcoinExchange::find_key(std::string &date)
 {
     std::map<std::string, double>::iterator it = data.lower_bound(date);
-    if (it == data.end())
+    if (it == data.begin() && it->first != date)
     {
         std::cerr << "not date equal or less than the current date found.\n";
         return (0);
     }
-    if (date != it->first)
+    if (it->first != date)
     {
-        if (it == data.begin())
-        {
-            return (it->second);
-        }
         it--;
     }
     return (it->second);
@@ -118,11 +114,46 @@ void BitcoinExchange::process(const char *av)
     }
 }
 
+int BitcoinExchange::parse_helper(std::string &date)
+{
+    std::stringstream res(date);
+    std::stringstream s;
+    std::string word;
+    int i = 0;
+    int l = 0;
+    while (getline(res, word, '-'))
+    {
+        if (i)
+        {
+            word >> l;
+            if (i == 1)
+            {
+                if (l < 1 || l > 12)
+                {
+                    std::cerr << "Error: bad input => " << date << "\n";
+                    return (1);
+                }
+            }
+            else
+            {
+                if (l < 1 || l > 31)
+                {
+                    std::cerr << "Error: bad input => " << date << "\n";
+                    return (1);
+                }
+            }
+        }
+        i++;
+    }
+    return (0);
+}
+
 int BitcoinExchange::parse(std::string &date, std::string &value)
 {
     std::stringstream res(value);
+    if (parse_helper(date))
+        return (1);
     int count = 0;
-    int v = 0;
     int white_count = 0;
 	if (date.size() != 10)
 	{
