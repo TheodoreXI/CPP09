@@ -105,6 +105,11 @@ void BitcoinExchange::process(const char *av)
 	while (getline(in_file, buffer))
     {
         res.clear();
+        if (buffer.find('|') == std::string::npos)
+        {
+            std::cerr << "Error: bad input => " << buffer << "\n";
+            continue;
+        }
 		res.str(buffer);
 		getline(res, date, '|');
 		getline(res, value);
