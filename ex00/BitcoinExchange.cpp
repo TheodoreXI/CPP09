@@ -19,10 +19,10 @@ BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &obj)
     return (*this);
 }
 
-void BitcoinExchange::fill(std::string &s)
+void BitcoinExchange::fill(const char *s)
 {
     std::string buffer;
-    std::fstream in_file(s.c_str());
+    std::fstream in_file(s);
     std::stringstream res;
     std::string out;
     std::string temp;
@@ -76,7 +76,7 @@ double BitcoinExchange::find_key(std::string &date, int *check)
         *check = 1;
         return (0);
     }
-    if (it->first != date)
+    if (it == data.end() || it->first != date)
     {
         it--;
     }
@@ -219,7 +219,6 @@ int BitcoinExchange::parse(std::string &date, std::string &value)
             std::cerr << "Error: value => " << value <<"\n";
             return (1);
         }
-
     }
     res >> v;
     if (v > 1000)

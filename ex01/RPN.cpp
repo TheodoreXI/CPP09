@@ -19,7 +19,7 @@ int ft_parse(char c, int num1, int num2)
         return (num1*num2);
     else if (c == '/')
     {
-        if (!num1 || !num2)
+        if (!num2)
             throw (std::runtime_error("Error"));
         return (num1/num2);
     }

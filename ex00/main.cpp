@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
         std::cout << "You need to input " << argv[0] << " then the name of the file.\n";
         return (1);
     }
-    std::string buffer;
+    const char *buffer;
     std::fstream in_file(argv[1]);
     if (!in_file.is_open())
     {

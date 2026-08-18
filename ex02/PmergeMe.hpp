@@ -12,6 +12,7 @@
 class PmergeMe
 {
     private:
+        std::vector<int> base;
         std::vector<int> vect_cont;
         std::list<int> list_cont;
     public:

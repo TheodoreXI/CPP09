@@ -120,7 +120,7 @@ void binaryInsert(std::vector<int> &m, std::vector<int>::iterator b, int v)
 std::vector<int> PmergeMe::sorted(std::vector<int> &vect_cont)
 {
     if (vect_cont.size() == 1)
-    return (vect_cont);
+        return (vect_cont);
     std::vector<std::pair<int, int>> ps;
     int left = 0;
     if (vect_cont.size() % 2)

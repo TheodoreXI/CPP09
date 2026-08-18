@@ -18,10 +18,7 @@ class RPN
         RPN(const RPN &obj);
         RPN &operator=(const RPN &obj);
         int get_res(void);
-
 };
-
-
 
 
 #endif

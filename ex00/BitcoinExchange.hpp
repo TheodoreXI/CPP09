@@ -19,7 +19,7 @@ class BitcoinExchange
         BitcoinExchange(const BitcoinExchange &obj);
         ~BitcoinExchange(void);
         BitcoinExchange &operator=(const BitcoinExchange &obj);
-        void fill(std::string &s);
+        void fill(const char *s);
         void process(const char *av);
 		int parse(std::string &date, std::string &value);
         double find_key(std::string &date, int *check);
