@@ -8,9 +8,9 @@ double micro_sec(void)
 }
 
 template <typename T>
-void print(cont T &a)
+void print(T &a)
 {
-    typename T::iterator it = c.begin();
+    typename T::iterator it = a.begin();
     while (it != a.end())
     {
         if (it != a.begin())
@@ -48,7 +48,7 @@ int main(int ac, char **av)
         std::cout.setf(std::ios::fixed);
         std::cout.precision(5);
         std::cout << "Time to process a range of " << p.get_vect().size() << " elements with std::vector : " << end << " us\n";
-        std::cout <<  "Time to process a range of " << p.get_list().size() << " elements with std::list : " << endl << " us\n";
+        std::cout <<  "Time to process a range of " << p.get_list().size() << " elements with std::list : " << lend << " us\n";
     }
     catch(const std::exception &e)
     {

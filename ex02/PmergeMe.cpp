@@ -23,32 +23,6 @@ PmergeMe &PmergeMe::operator=(const PmergeMe &obj)
     return (*this);
 }
 
-
-PmergeMe(const char **av, size_t size)
-{
-    std::stringstream ss;
-    std::stringstream convert;
-    std::string word;
-    int num = 0;
-    for (size_t i = 1; i < size; i++)
-    {
-        ss.str(av[i]);
-        while (ss >> word)
-        {
-            if (parsing(word))
-                throw (std::runtime_error("bad input\n"));
-            convert.str(word);
-            convert >> num;
-            if ((num == 2147483647 && word != "2147483647")
-                || (num == -2147483648 && word != "-2147483648"))
-            {
-                throw (std::runtime_error("bad input\n"));
-            }
-            vect_cont.push_back(num);
-            list_cont.push_back(num);
-        }
-    }
-}
 int parsing(std::string &word)
 {
     for (size_t i = 0; i < word.size(); i++)
@@ -58,6 +32,40 @@ int parsing(std::string &word)
     }
     return (0);
 }
+
+PmergeMe::PmergeMe(char **av, size_t size)
+{
+    std::stringstream ss;
+    std::stringstream convert;
+    std::string word;
+    std::vector<int> c;
+    int num = 0;
+    for (size_t i = 1; i < size; i++)
+    {
+        ss.clear();
+        ss.str(av[i]);
+        while (ss >> word)
+        {
+            if (parsing(word))
+                throw (std::runtime_error("bad input\n"));
+            ss.clear();
+            ss.str(word);
+            ss >> num;
+            if ((num == 2147483647 && word != "2147483647")
+                || (num == -2147483648 && word != "-2147483648"))
+            {
+                throw (std::runtime_error("bad input\n"));
+            }
+            if (std::find(vect_cont.begin(), vect_cont.end(), num) != vect_cont.end())
+            {
+                throw(std::runtime_error("duplicates found\n"));
+            }
+            vect_cont.push_back(num);
+            list_cont.push_back(num);
+        }
+    }
+}
+
 
 std::vector<size_t> ft_jacob_seque(size_t m)
 {
@@ -201,7 +209,7 @@ std::list<int> PmergeMe::sortedli(std::list<int> &list_cont)
 {
     if (list_cont.size() <= 1)
         return (list_cont);
-    std::vector<std::pair<int, int>> ps;
+    std::vector<std::pair<int, int> > ps;
     int left = 0;
     if (list_cont.size() % 2)
         left = 1;
@@ -215,7 +223,7 @@ std::list<int> PmergeMe::sortedli(std::list<int> &list_cont)
     {
         itf = it;
         it++;
-        if (it == lit_cont.end())
+        if (it == list_cont.end())
         {
             left = 1;
             left = *itf;
@@ -237,7 +245,7 @@ std::list<int> PmergeMe::sortedli(std::list<int> &list_cont)
     for (size_t i = 0; i < ps.size(); i++)
         w.push_back(ps[i].first);
     //popilating the winners
-    w = sorted(w);
+    w = sortedli(w);
     std::list<int> m;
     std::vector<int> p;
     m.push_back(w.front());
@@ -264,9 +272,9 @@ std::list<int> PmergeMe::sortedli(std::list<int> &list_cont)
         v = *wit;
         for (size_t i = 0; i< ps.size(); i++)
         {
-            if (ps[j].first == v)
+            if (ps[i].first == v)
             {
-                p.push_back(ps[j].second);
+                p.push_back(ps[i].second);
                 break;
             }
         }
@@ -288,7 +296,7 @@ std::list<int> PmergeMe::sortedli(std::list<int> &list_cont)
         std::advance(wit, w_i-1);
         w_v = *wit;
         b = std::find(m.begin(), m.end(), w_v);
-        binaryInsertList(m, bound, v);
+        binaryInsertList(m, b, v);
     }
     if (left)
         binaryInsertList(m, m.end(), left);

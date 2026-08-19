@@ -24,6 +24,7 @@ class PmergeMe
         PmergeMe &operator=(const PmergeMe &obj);
         PmergeMe(char **av, size_t size);
         std::vector<int> sorted(std::vector<int> &vect_cont);
+        std::list<int> sortedli(std::list<int> &list_cont);
         void final_sort_vect(std::vector<int> &vect_cont);
         void final_sort_list(std::list<int> &list_cont);
         std::vector<size_t> generate_jacob(size_t m);
